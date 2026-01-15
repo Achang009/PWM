@@ -9,8 +9,7 @@ entity pwmcnt is
         i_reset     : in  STD_LOGIC;
         o_countup   : out STD_LOGIC_VECTOR(3 downto 0);
         o_countdown : out STD_LOGIC_VECTOR(3 downto 0);
-        o_pwm       : out STD_LOGIC;
-        o_status    : out STD_LOGIC      
+        o_pwm       : out STD_LOGIC
     );
 end pwmcnt;
 
@@ -111,10 +110,8 @@ begin
             
             if state = '0' then 
                 bright   <= cntup;
-                o_status <= '0';
             else
                 bright   <= cntdown;
-                o_status <= '1';
             end if;
 
             if pwm_cnt < bright then
