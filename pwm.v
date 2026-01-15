@@ -27,7 +27,7 @@ architecture Behavioral of pwmcnt is
     signal bright  : unsigned(3 downto 0) := min; 
 
 begin
-    freq: process(i_clk, i_reset)
+    frequency_divider: process(i_clk, i_reset)
     begin
         if i_reset = '1' then
             r_div_cnt <= 0;
@@ -41,7 +41,7 @@ begin
                 r_div_cnt <= r_div_cnt + 1;
             end if;
         end if;
-    end process freq;
+    end process frequency_divider;
 
     FSM: process(i_clk, i_reset)
     begin
@@ -127,3 +127,4 @@ begin
     o_countdown <= std_logic_vector(cntdown);
 
 end Behavioral;
+
