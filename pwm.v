@@ -16,30 +16,27 @@ architecture Behavioral of pwmcnt is
 
     constant max         : unsigned(3 downto 0) := "1111";
     constant min         : unsigned(3 downto 0) := "0000";
-    constant C_MAX_COUNT : integer := 25000000;
     
-    signal state     : STD_LOGIC := '0';
-    signal cnt       : unsigned(3 downto 0) := min;
-    signal r_div_cnt : integer range 0 to C_MAX_COUNT := 0;
-    signal f_clk     : std_logic := '0';
-    signal pwm_cnt   : unsigned(3 downto 0) := min;
+    signal state         : STD_LOGIC := '0';
+    signal cnt           : unsigned(3 downto 0) := min;
+    
+    signal bin_cnt       : STD_LOGIC_VECTOR(24 downto 0) := (others => '0');
+    signal f_clk         : std_logic := '0';
+    
+    signal pwm_cnt       : unsigned(3 downto 0) := min;
 
 begin
 
     frequency_divider: process(i_clk, i_reset)
     begin
         if i_reset = '1' then
-            r_div_cnt <= 0;
-            f_clk     <= '0';
+            bin_cnt <= (others => '0');
         elsif rising_edge(i_clk) then
-            if r_div_cnt = C_MAX_COUNT then
-                r_div_cnt <= 0;
-                f_clk     <= not f_clk;
-            else
-                r_div_cnt <= r_div_cnt + 1;
-            end if;
+            bin_cnt <= bin_cnt + 1;
         end if;
     end process frequency_divider;
+
+    f_clk <= bin_cnt(24);
 
     FSM: process(f_clk, i_reset)
     begin
