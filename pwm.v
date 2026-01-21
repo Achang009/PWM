@@ -16,15 +16,11 @@ architecture Behavioral of pwmcnt is
 
     constant max         : unsigned(3 downto 0) := "1111";
     constant min         : unsigned(3 downto 0) := "0000";
-    
     signal state         : STD_LOGIC := '0';
     signal cnt           : unsigned(3 downto 0) := min;
-    
     signal bin_cnt       : STD_LOGIC_VECTOR(24 downto 0) := (others => '0');
     signal f_clk         : std_logic := '0';
-    
     signal pwm_cnt       : unsigned(3 downto 0) := min;
-
 begin
 
     frequency_divider: process(i_clk, i_reset)
@@ -91,3 +87,4 @@ begin
     o_cnt <= std_logic_vector(cnt);
 
 end Behavioral;
+
