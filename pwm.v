@@ -3,16 +3,16 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity pwmcnt is
+entity pwm_cnt is
     Port (
         i_clk   : in  STD_LOGIC;
         i_reset : in  STD_LOGIC;
         o_cnt   : out STD_LOGIC_VECTOR(3 downto 0);
         o_pwm   : out STD_LOGIC
     );
-end pwmcnt;
+end pwm_cnt;
 
-architecture Behavioral of pwmcnt is
+architecture Behavioral of pwm_cnt is
 
     constant max         : unsigned(3 downto 0) := "1111";
     constant min         : unsigned(3 downto 0) := "0000";
@@ -87,4 +87,5 @@ begin
     o_cnt <= std_logic_vector(cnt);
 
 end Behavioral;
+
 
