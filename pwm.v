@@ -16,6 +16,7 @@ architecture Behavioral of pwm_cnt is
 
     constant max         : STD_LOGIC_VECTOR(3 downto 0) := "1111";
     constant min         : STD_LOGIC_VECTOR(3 downto 0) := "0000";
+    
     signal state         : STD_LOGIC := '0';
     signal cnt_up        : STD_LOGIC_VECTOR(3 downto 0) := min;
     signal cnt_down      : STD_LOGIC_VECTOR(3 downto 0) := max;
@@ -83,7 +84,14 @@ begin
         end if;
     end process down_counter;
 
-    cnt <= cnt_up when state = '0' else cnt_down;
+    mux_process: process(state, cnt_up, cnt_down)
+    begin
+        if state = '0' then
+            cnt <= cnt_up;
+        else
+            cnt <= cnt_down;
+        end if;
+    end process mux_process;
 
     pwm: process(i_clk)
     begin
