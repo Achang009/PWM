@@ -33,25 +33,27 @@ begin
         end if;
     end process frequency_divider;
 
-    f_clk <= bin_cnt(24);
+    f_clk <= bin_cnt(16);
 
-    FSM: process(f_clk, i_reset)
+    FSM: process(i_clk, i_reset)
     begin
         if i_reset = '1' then
             state <= '0';
-        elsif rising_edge(f_clk) then
-            case state is
-                when '0' =>
-                    if cnt_up = max then
-                        state <= '1';
-                    end if;
-                when '1' =>
-                    if cnt_down = min then
+        elsif rising_edge(i_clk) then
+            if pwm_cnt = max then
+                case state is
+                    when '0' =>
+                        if cnt_up = max then
+                            state <= '1';
+                        end if;
+                    when '1' =>
+                        if cnt_down = min then
+                            state <= '0';
+                        end if;
+                    when others =>
                         state <= '0';
-                    end if;
-                when others =>
-                    state <= '0';
-            end case;
+                end case;
+            end if;
         end if;
     end process FSM;
 
@@ -60,10 +62,16 @@ begin
         if i_reset = '1' then
             cnt_up <= min;
         elsif rising_edge(f_clk) then
-            if cnt_up < max then
-                cnt_up <= cnt_up + 1;
-            else
-                cnt_up <= min;
+            if pwm_cnt = max then
+                if state = '0' then
+                    if cnt_up < max then
+                        cnt_up <= cnt_up + 1;
+                    else
+                        cnt_up <= max;
+                    end if;
+                else
+                    cnt_up <= min;
+                end if;
             end if;
         end if;
     end process up_counter;
@@ -73,17 +81,23 @@ begin
         if i_reset = '1' then
             cnt_down <= max;
         elsif rising_edge(f_clk) then
-            if cnt_down > min then
-                cnt_down <= cnt_down - 1;
-            else
-                cnt_down <= max;
+            if pwm_cnt = max then
+                if state = '1' then
+                    if cnt_down > min then
+                        cnt_down <= cnt_down - 1;
+                    else
+                        cnt_down <= min;
+                    end if;
+                else
+                    cnt_down <= max;
+                end if;
             end if;
         end if;
     end process down_counter;
 
-    pwm: process(i_clk)
+    pwm: process(f_clk)
     begin
-        if rising_edge(i_clk) then
+        if rising_edge(f_clk) then
             pwm_cnt <= pwm_cnt + 1;
             
             if state = '0' then
