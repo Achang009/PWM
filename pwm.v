@@ -14,13 +14,16 @@ end pwm_cnt;
 
 architecture Behavioral of pwm_cnt is
 
-    constant max         : unsigned(3 downto 0) := "1111";
-    constant min         : unsigned(3 downto 0) := "0000";
+    constant max         : STD_LOGIC_VECTOR(3 downto 0) := "1111";
+    constant min         : STD_LOGIC_VECTOR(3 downto 0) := "0000";
     signal state         : STD_LOGIC := '0';
-    signal cnt           : unsigned(3 downto 0) := min;
+    signal cnt_up        : STD_LOGIC_VECTOR(3 downto 0) := min;
+    signal cnt_down      : STD_LOGIC_VECTOR(3 downto 0) := max;
+    signal cnt           : STD_LOGIC_VECTOR(3 downto 0);
     signal bin_cnt       : STD_LOGIC_VECTOR(24 downto 0) := (others => '0');
     signal f_clk         : std_logic := '0';
-    signal pwm_cnt       : unsigned(3 downto 0) := min;
+    signal pwm_cnt       : STD_LOGIC_VECTOR(3 downto 0) := min;
+
 begin
 
     frequency_divider: process(i_clk, i_reset)
@@ -54,22 +57,33 @@ begin
         end if;
     end process FSM;
 
-    updown_counter: process(f_clk, i_reset)
+    up_counter: process(f_clk, i_reset)
     begin
         if i_reset = '1' then
-            cnt <= min;
+            cnt_up <= min;
         elsif rising_edge(f_clk) then
-            if state = '0' then
-                if cnt < max then
-                    cnt <= cnt + 1;
-                end if;
+            if cnt_up < max then
+                cnt_up <= cnt_up + 1;
             else
-                if cnt > min then
-                    cnt <= cnt - 1;
-                end if;
+                cnt_up <= min;
             end if;
         end if;
-    end process updown_counter;
+    end process up_counter;
+
+    down_counter: process(f_clk, i_reset)
+    begin
+        if i_reset = '1' then
+            cnt_down <= max;
+        elsif rising_edge(f_clk) then
+            if cnt_down > min then
+                cnt_down <= cnt_down - 1;
+            else
+                cnt_down <= max;
+            end if;
+        end if;
+    end process down_counter;
+
+    cnt <= cnt_up when state = '0' else cnt_down;
 
     pwm: process(i_clk)
     begin
@@ -84,8 +98,6 @@ begin
         end if;
     end process pwm;
 
-    o_cnt <= std_logic_vector(cnt);
+    o_cnt <= cnt;
 
 end Behavioral;
-
-
