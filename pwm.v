@@ -7,7 +7,6 @@ entity pwm_cnt is
     Port (
         i_clk   : in  STD_LOGIC;
         i_reset : in  STD_LOGIC;
-        o_cnt   : out STD_LOGIC_VECTOR(3 downto 0);
         o_pwm   : out STD_LOGIC
     );
 end pwm_cnt;
@@ -16,11 +15,9 @@ architecture Behavioral of pwm_cnt is
 
     constant max         : STD_LOGIC_VECTOR(3 downto 0) := "1111";
     constant min         : STD_LOGIC_VECTOR(3 downto 0) := "0000";
-    
     signal state         : STD_LOGIC := '0';
     signal cnt_up        : STD_LOGIC_VECTOR(3 downto 0) := min;
     signal cnt_down      : STD_LOGIC_VECTOR(3 downto 0) := max;
-    signal cnt           : STD_LOGIC_VECTOR(3 downto 0);
     signal bin_cnt       : STD_LOGIC_VECTOR(24 downto 0) := (others => '0');
     signal f_clk         : std_logic := '0';
     signal pwm_cnt       : STD_LOGIC_VECTOR(3 downto 0) := min;
@@ -45,11 +42,11 @@ begin
         elsif rising_edge(f_clk) then
             case state is
                 when '0' =>
-                    if cnt = max then
+                    if cnt_up = max then
                         state <= '1';
                     end if;
                 when '1' =>
-                    if cnt = min then
+                    if cnt_down = min then
                         state <= '0';
                     end if;
                 when others =>
@@ -84,28 +81,25 @@ begin
         end if;
     end process down_counter;
 
-    mux_process: process(state, cnt_up, cnt_down)
-    begin
-        if state = '0' then
-            cnt <= cnt_up;
-        else
-            cnt <= cnt_down;
-        end if;
-    end process mux_process;
-
     pwm: process(i_clk)
     begin
         if rising_edge(i_clk) then
             pwm_cnt <= pwm_cnt + 1;
             
-            if pwm_cnt < cnt then
-                o_pwm <= '1';
+            if state = '0' then
+                if pwm_cnt < cnt_up then
+                    o_pwm <= '1';
+                else
+                    o_pwm <= '0';
+                end if;
             else
-                o_pwm <= '0';
+                if pwm_cnt < cnt_down then
+                    o_pwm <= '1';
+                else
+                    o_pwm <= '0';
+                end if;
             end if;
         end if;
     end process pwm;
-
-    o_cnt <= cnt;
 
 end Behavioral;
