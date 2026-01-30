@@ -19,11 +19,11 @@ architecture Behavioral of pwm_cnt is
     type state_type is (brightening, dimming);
     signal state         : state_type := brightening;
     
-    signal cnt_up        : STD_LOGIC_VECTOR(3 downto 0) := min;
-    signal cnt_down      : STD_LOGIC_VECTOR(3 downto 0) := max;
+    signal cnt_up        : STD_LOGIC_VECTOR(7 downto 0) := min;
+    signal cnt_down      : STD_LOGIC_VECTOR(7 downto 0) := max;
     signal bin_cnt       : STD_LOGIC_VECTOR(24 downto 0) := (others => '0');
     signal f_clk         : std_logic := '0';
-    signal pwm_cnt       : STD_LOGIC_VECTOR(3 downto 0) := min;
+    signal pwm_cnt       : STD_LOGIC_VECTOR(7 downto 0) := min;
 
 begin
 
@@ -118,5 +118,6 @@ begin
     end process pwm;
 
 end Behavioral;
+
 
 
