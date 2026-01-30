@@ -16,7 +16,6 @@ architecture Behavioral of pwm_cnt is
     constant max         : STD_LOGIC_VECTOR(3 downto 0) := "1111";
     constant min         : STD_LOGIC_VECTOR(3 downto 0) := "0000";
     
-    -- 定義名稱：定義一個新的型別來取代原本的 '0' 和 '1'
     type state_type is (brightening, dimming);
     signal state         : state_type := brightening;
     
@@ -119,3 +118,4 @@ begin
     end process pwm;
 
 end Behavioral;
+
