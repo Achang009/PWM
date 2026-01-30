@@ -1,0 +1,6 @@
+set_property PACKAGE_PIN Y9 [get_ports i_clk]
+set_property PACKAGE_PIN M15 [get_ports i_reset]
+set_property IOSTANDARD LVCMOS33 [get_ports i_clk]
+set_property IOSTANDARD LVCMOS33 [get_ports i_reset]
+set_property IOSTANDARD LVCMOS33 [get_ports o_pwm]
+set_property PACKAGE_PIN V22 [get_ports o_pwm]
