@@ -15,7 +15,11 @@ architecture Behavioral of pwm_cnt is
 
     constant max         : STD_LOGIC_VECTOR(3 downto 0) := "1111";
     constant min         : STD_LOGIC_VECTOR(3 downto 0) := "0000";
-    signal state         : STD_LOGIC := '0';
+    
+    -- 定義名稱：定義一個新的型別來取代原本的 '0' 和 '1'
+    type state_type is (brightening, dimming);
+    signal state         : state_type := brightening;
+    
     signal cnt_up        : STD_LOGIC_VECTOR(3 downto 0) := min;
     signal cnt_down      : STD_LOGIC_VECTOR(3 downto 0) := max;
     signal bin_cnt       : STD_LOGIC_VECTOR(24 downto 0) := (others => '0');
@@ -38,20 +42,18 @@ begin
     FSM: process(i_clk, i_reset)
     begin
         if i_reset = '1' then
-            state <= '0';
+            state <= brightening;
         elsif rising_edge(i_clk) then
             if pwm_cnt = max then
                 case state is
-                    when '0' =>
+                    when brightening =>
                         if cnt_up = max then
-                            state <= '1';
+                            state <= dimming;
                         end if;
-                    when '1' =>
+                    when dimming =>
                         if cnt_down = min then
-                            state <= '0';
+                            state <= brightening;
                         end if;
-                    when others =>
-                        state <= '0';
                 end case;
             end if;
         end if;
@@ -63,7 +65,7 @@ begin
             cnt_up <= min;
         elsif rising_edge(f_clk) then
             if pwm_cnt = max then
-                if state = '0' then
+                if state = brightening then
                     if cnt_up < max then
                         cnt_up <= cnt_up + 1;
                     else
@@ -82,7 +84,7 @@ begin
             cnt_down <= max;
         elsif rising_edge(f_clk) then
             if pwm_cnt = max then
-                if state = '1' then
+                if state = dimming then
                     if cnt_down > min then
                         cnt_down <= cnt_down - 1;
                     else
@@ -100,13 +102,13 @@ begin
         if rising_edge(f_clk) then
             pwm_cnt <= pwm_cnt + 1;
             
-            if state = '0' then
+            if state = brightening then
                 if pwm_cnt < cnt_up then
                     o_pwm <= '1';
                 else
                     o_pwm <= '0';
                 end if;
-            else
+            else -- dimming
                 if pwm_cnt < cnt_down then
                     o_pwm <= '1';
                 else
