@@ -13,17 +13,17 @@ end pwm_cnt;
 
 architecture Behavioral of pwm_cnt is
 
-    constant max         : STD_LOGIC_VECTOR(7 downto 0) := "11111111";
-    constant min         : STD_LOGIC_VECTOR(7 downto 0) := "00000000";
+    constant max         : STD_LOGIC_VECTOR(9 downto 0) := "1111111111";
+    constant min         : STD_LOGIC_VECTOR(9 downto 0) := "0000000000";
     
     type state_type is (brightening, dimming);
     signal state         : state_type := brightening;
     
-    signal cnt_up        : STD_LOGIC_VECTOR(7 downto 0) := min;
-    signal cnt_down      : STD_LOGIC_VECTOR(7 downto 0) := max;
+    signal cnt_up        : STD_LOGIC_VECTOR(9 downto 0) := min;
+    signal cnt_down      : STD_LOGIC_VECTOR(9 downto 0) := max;
     signal bin_cnt       : STD_LOGIC_VECTOR(24 downto 0) := (others => '0');
     signal f_clk         : std_logic := '0';
-    signal pwm_cnt       : STD_LOGIC_VECTOR(7 downto 0) := min;
+    signal pwm_cnt       : STD_LOGIC_VECTOR(9 downto 0) := min;
 
 begin
 
@@ -36,7 +36,7 @@ begin
         end if;
     end process frequency_divider;
 
-    f_clk <= bin_cnt(16);
+    f_clk <= bin_cnt(6);
 
     FSM: process(i_clk, i_reset)
     begin
@@ -118,6 +118,5 @@ begin
     end process pwm;
 
 end Behavioral;
-
 
 
