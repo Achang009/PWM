@@ -8,7 +8,6 @@ entity pwm_cnt is
         i_clk        : in  STD_LOGIC;
         i_reset      : in  STD_LOGIC;
         o_pwm        : out STD_LOGIC;
-        -- 修改後的監控輸出名稱
         o_state      : out STD_LOGIC; -- '0': brightening, '1': dimming
         o_cnt_up     : out STD_LOGIC_VECTOR(3 downto 0);
         o_cnt_down   : out STD_LOGIC_VECTOR(3 downto 0)
@@ -98,4 +97,5 @@ begin
     end process pwm;
 
 end Behavioral;
+
 
