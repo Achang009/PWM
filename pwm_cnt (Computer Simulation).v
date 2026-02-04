@@ -17,7 +17,7 @@ end pwm_cnt;
 
 architecture Behavioral of pwm_cnt is
 
-    constant max         : STD_LOGIC_VECTOR(3 downto 0) := "1010"; -- 10
+    constant max         : STD_LOGIC_VECTOR(3 downto 0) := "1111"; 
     constant min         : STD_LOGIC_VECTOR(3 downto 0) := "0000";
     
     type state_type is (brightening, dimming);
@@ -98,3 +98,4 @@ begin
     end process pwm;
 
 end Behavioral;
+
